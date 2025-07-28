@@ -3,7 +3,7 @@ import os
 import json
 import asyncio
 import tempfile
-from config.settings import GEMINI_API_KEY, HTTP_PROXY_URL
+from config.settings import GEMINI_API_KEY
 from prompts.base_prompts import Prompts
 
 class GeminiService:
