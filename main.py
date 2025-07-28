@@ -1,10 +1,16 @@
 import logging
-from telegram.ext import Application, CommandHandler, MessageHandler, filters
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackQueryHandler
 
 from config.settings import TELEGRAM_BOT_TOKEN
-from handlers.command_handlers import start, help_command, new_chat
+from handlers.command_handlers import (
+    start,
+    help_command,
+    new_chat,
+    button_callback_handler, # New: for handling button presses
+    main_menu # New: for returning to main menu
+)
 from handlers.message_handlers import (
-    handle_text_message,
+    handle_all_messages, # New: handles all text messages based on state
     handle_voice_message,
     handle_image_message,
 )
@@ -23,9 +29,15 @@ def main() -> None:
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("help", help_command))
     application.add_handler(CommandHandler("new", new_chat))
+    # No longer need specific command handlers for structured_output, execute_code, analyze_url, search
+    # as they are now handled via buttons and handle_all_messages
+
+    # Callback query handler for buttons
+    application.add_handler(CallbackQueryHandler(button_callback_handler))
 
     # Message handlers
-    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text_message))
+    # handle_all_messages will now manage text input based on user state
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_all_messages))
     application.add_handler(MessageHandler(filters.VOICE, handle_voice_message))
     application.add_handler(MessageHandler(filters.PHOTO, handle_image_message))
 

@@ -1,0 +1,69 @@
+2025-07-29 02:52:48,441 - telegram.ext.Application - ERROR - No error handlers are registered, logging exception.
+Traceback (most recent call last):
+  File "d:\Projects\GeminiAgentBot\venv\Lib\site-packages\telegram\ext\_application.py", line 1264, in process_update
+    await coroutine
+  File "d:\Projects\GeminiAgentBot\venv\Lib\site-packages\telegram\ext\_handlers\basehandler.py", line 157, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Projects\GeminiAgentBot\handlers\command_handlers.py", line 31, in help_command
+    await update.message.reply_markdown_v2(help_text)
+  File "d:\Projects\GeminiAgentBot\venv\Lib\site-packages\telegram\_message.py", line 1730, in reply_markdown_v2
+    return await self.get_bot().send_message(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<17 lines>...
+    )
+    ^
+  File "d:\Projects\GeminiAgentBot\venv\Lib\site-packages\telegram\ext\_extbot.py", line 2820, in send_message
+    return await super().send_message(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<18 lines>...
+    )
+    ^
+  File "d:\Projects\GeminiAgentBot\venv\Lib\site-packages\telegram\_bot.py", line 541, in decorator
+    result = await func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Projects\GeminiAgentBot\venv\Lib\site-packages\telegram\_bot.py", line 1015, in send_message
+    return await self._send_message(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<16 lines>...
+    )
+    ^
+  File "d:\Projects\GeminiAgentBot\venv\Lib\site-packages\telegram\ext\_extbot.py", line 581, in _send_message
+    result = await super()._send_message(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<18 lines>...
+    )
+    ^
+  File "d:\Projects\GeminiAgentBot\venv\Lib\site-packages\telegram\_bot.py", line 735, in _send_message
+    result = await self._post(
+             ^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "d:\Projects\GeminiAgentBot\venv\Lib\site-packages\telegram\_bot.py", line 629, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "d:\Projects\GeminiAgentBot\venv\Lib\site-packages\telegram\ext\_extbot.py", line 347, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "d:\Projects\GeminiAgentBot\venv\Lib\site-packages\telegram\_bot.py", line 657, in _do_post
+    return await request.post(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "d:\Projects\GeminiAgentBot\venv\Lib\site-packages\telegram\request\_baserequest.py", line 200, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "d:\Projects\GeminiAgentBot\venv\Lib\site-packages\telegram\request\_baserequest.py", line 379, in _request_wrapper
+    raise BadRequest(message)
+telegram.error.BadRequest: Can't parse entities: character '>' is reserved and must be escaped with the preceding '\'
