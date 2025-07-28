@@ -1,17 +1,15 @@
 from telegram import Update, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
-from services.gemini_service import GeminiService
 import json
 from config.constants import States, Buttons, ButtonText
 from utils.keyboard_utils import get_main_menu_keyboard, get_back_button_keyboard
-
-gemini_service = GeminiService()
 
 # Helper function to set user state
 def set_user_state(context: ContextTypes.DEFAULT_TYPE, state: int) -> None:
     context.user_data['state'] = state
 
 async def main_menu(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    gemini_service = context.bot_data['gemini_service']
     set_user_state(context, States.MAIN_MENU)
     reply_text = "Выберите действие:"
     if update.callback_query:
@@ -32,6 +30,7 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     await update.message.reply_text(help_text, reply_markup=get_main_menu_keyboard())
 
 async def new_chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    gemini_service = context.bot_data['gemini_service']
     user_id = update.effective_user.id
     gemini_service.reset_chat_session(user_id)
     set_user_state(context, States.MAIN_MENU) # Reset state to main menu
@@ -39,6 +38,7 @@ async def new_chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 # Callback handler for main menu buttons
 async def button_callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    gemini_service = context.bot_data['gemini_service']
     query = update.callback_query
     await query.answer() # Acknowledge the callback query
 

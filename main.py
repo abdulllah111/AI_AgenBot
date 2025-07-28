@@ -1,16 +1,18 @@
 import logging
+import os
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackQueryHandler
 
-from config.settings import TELEGRAM_BOT_TOKEN
+from config.settings import TELEGRAM_BOT_TOKEN, GEMINI_API_KEY, HTTP_PROXY_URL
+from services.gemini_service import GeminiService
 from handlers.command_handlers import (
     start,
     help_command,
     new_chat,
-    button_callback_handler, # New: for handling button presses
-    main_menu # New: for returning to main menu
+    button_callback_handler,
+    main_menu
 )
 from handlers.message_handlers import (
-    handle_all_messages, # New: handles all text messages based on state
+    handle_all_messages,
     handle_voice_message,
     handle_image_message,
 )
@@ -23,20 +25,35 @@ logger = logging.getLogger(__name__)
 
 def main() -> None:
     """Start the bot."""
-    application = Application.builder().token(TELEGRAM_BOT_TOKEN).build()
+    # Set proxy for google-generativeai (Gemini API)
+    if HTTP_PROXY_URL:
+        os.environ['HTTP_PROXY'] = HTTP_PROXY_URL
+        os.environ['HTTPS_PROXY'] = HTTP_PROXY_URL
+        os.environ['ALL_PROXY'] = HTTP_PROXY_URL
+
+    # Initialize GeminiService AFTER setting proxy environment variables
+    gemini_service = GeminiService()
+
+    application_builder = Application.builder().token(TELEGRAM_BOT_TOKEN)
+
+    # Set proxy for python-telegram-bot
+    if HTTP_PROXY_URL:
+        application_builder = application_builder.proxy_url(HTTP_PROXY_URL)
+
+    application = application_builder.build()
+
+    # Store gemini_service in bot_data so handlers can access it
+    application.bot_data['gemini_service'] = gemini_service
 
     # Command handlers
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("help", help_command))
     application.add_handler(CommandHandler("new", new_chat))
-    # No longer need specific command handlers for structured_output, execute_code, analyze_url, search
-    # as they are now handled via buttons and handle_all_messages
 
     # Callback query handler for buttons
     application.add_handler(CallbackQueryHandler(button_callback_handler))
 
     # Message handlers
-    # handle_all_messages will now manage text input based on user state
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_all_messages))
     application.add_handler(MessageHandler(filters.VOICE, handle_voice_message))
     application.add_handler(MessageHandler(filters.PHOTO, handle_image_message))

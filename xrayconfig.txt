@@ -1,0 +1,81 @@
+{
+  "log": {
+    "loglevel": "warning"
+  },
+  "inbounds": [
+    {
+      "port": 8888,  // Порт, на котором будет слушать ваш локальный HTTP-прокси
+      "listen": "127.0.0.1", // Слушаем только на локальном интерфейсе
+      "protocol": "http",
+      "settings": {
+        "accounts": [
+          {
+            "user": "ваш_логин_для_прокси", // Замените на желаемый логин
+            "pass": "ваш_пароль_для_прокси"  // Замените на желаемый пароль
+          }
+        ]
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "217.60.39.36", // IP вашего Marzban сервера (из VLESS URI)
+            "port": 8443, // Порт вашего Marzban сервера (из VLESS URI)
+            "users": [
+              {
+                "id": "11b3a911-0969-4b6a-a5ec-d4524882cdc8", // Ваш UUID из VLESS URI
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "security": "reality",
+        "realitySettings": {
+          "dest": "discordapp.com:443", // SNI из VLESS URI (host:port)
+          "xver": 0,
+          "serverNames": [
+            "discordapp.com" // SNI из VLESS URI
+          ],
+          "fingerprint": "chrome", // Fingerprint из VLESS URI
+          "publicKey": "SbVKOEMjK0sIlbwg4akyBg5mL5KZwwB-ed4eEE7YnRc", // Public Key из VLESS URI
+          "shortId": "6ba85179e30d4fc2" // Short ID из VLESS URI
+        }
+      },
+      "tag": "proxy"
+    },
+    {
+      "protocol": "freedom",
+      "tag": "direct",
+      "settings": {}
+    }
+  ],
+  "routing": {
+    "rules": [
+      {
+        "type": "field",
+        "ip": [
+          "geoip:private"
+        ],
+        "outboundTag": "direct"
+      },
+      {
+        "type": "field",
+        "domain": [
+          "geosite:private"
+        ],
+        "outboundTag": "direct"
+      },
+      {
+        "type": "field",
+        "outboundTag": "proxy"
+      }
+    ]
+  }
+}

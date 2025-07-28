@@ -1,17 +1,15 @@
 from telegram import Update
 from telegram.ext import ContextTypes
-from services.gemini_service import GeminiService
 from config.constants import States, Buttons
 from utils.keyboard_utils import get_main_menu_keyboard, get_back_button_keyboard
 import json
-
-gemini_service = GeminiService()
 
 # Helper function to set user state (redefined here for clarity, can be moved to a common util if needed)
 def set_user_state(context: ContextTypes.DEFAULT_TYPE, state: int) -> None:
     context.user_data['state'] = state
 
 async def handle_all_messages(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    gemini_service = context.bot_data['gemini_service']
     user_id = update.effective_user.id
     current_state = context.user_data.get('state', States.MAIN_MENU)
     text = update.message.text
@@ -68,6 +66,7 @@ async def handle_all_messages(update: Update, context: ContextTypes.DEFAULT_TYPE
         set_user_state(context, States.MAIN_MENU)
 
 async def handle_image_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    gemini_service = context.bot_data['gemini_service']
     user_id = update.effective_user.id
     current_state = context.user_data.get('state', States.MAIN_MENU)
 
@@ -83,6 +82,7 @@ async def handle_image_message(update: Update, context: ContextTypes.DEFAULT_TYP
         await update.message.reply_text("Пожалуйста, выберите 'Понимание изображений' из меню, чтобы отправить изображение.", reply_markup=get_main_menu_keyboard())
 
 async def handle_voice_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    gemini_service = context.bot_data['gemini_service']
     user_id = update.effective_user.id
     current_state = context.user_data.get('state', States.MAIN_MENU)
 
