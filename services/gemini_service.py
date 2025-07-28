@@ -101,6 +101,8 @@ class GeminiService:
             history.append({"role": "model", "parts": [{"text": full_response_text}]})
 
             return full_response_text
+        except httpx.ReadError as e:
+            return f"Произошла сетевая ошибка при чтении ответа от Gemini API. Пожалуйста, попробуйте снова."
         except httpx.HTTPStatusError as e:
             # Read the response content before accessing .text
             await e.response.aread()

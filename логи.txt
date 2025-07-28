@@ -1,23 +1,15 @@
-$proxy = "http://rkdgphba:fjk6bg6afgku@23.95.150.145:6114/"
-$apiKey = "AIzaSyCBgMguA1S11BXgL-4PuaON2TQ8YnT3gRQ"
-
-$headers = @{
-    "Content-Type" = "application/json"
-}
-
-$body = @{
-    contents = @(
-        @{
-            parts = @(
-                @{ text = "Hello, Gemini!" }
-            )
-        }
-    )
-} | ConvertTo-Json
-
-Invoke-WebRequest -Uri "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=$apiKey" `
--Method Post `
--Headers $headers `
--Body $body `
--Proxy $proxy `
--UseBasicParsing
+curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent" \
+  -H 'Content-Type: application/json' \
+  -H 'X-goog-api-key: AIzaSyCBgMguA1S11BXgL-4PuaON2TQ8YnT3gRQ' \
+  -X POST \
+  -d '{
+    "contents": [
+      {
+        "parts": [
+          {
+            "text": "Explain how AI works in a few words"
+          }
+        ]
+      }
+    ]
+  }'
