@@ -2,7 +2,7 @@ import logging
 import os
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackQueryHandler
 
-from config.settings import TELEGRAM_BOT_TOKEN, GEMINI_API_KEY, HTTP_PROXY_URL
+from config.settings import TELEGRAM_BOT_TOKEN, GEMINI_API_KEY
 from services.gemini_service import GeminiService
 from handlers.command_handlers import (
     start,
@@ -25,20 +25,10 @@ logger = logging.getLogger(__name__)
 
 def main() -> None:
     """Start the bot."""
-    # Set proxy for google-generativeai (Gemini API)
-    if HTTP_PROXY_URL:
-        os.environ['HTTP_PROXY'] = HTTP_PROXY_URL
-        os.environ['HTTPS_PROXY'] = HTTP_PROXY_URL
-        os.environ['ALL_PROXY'] = HTTP_PROXY_URL
-
-    # Initialize GeminiService AFTER setting proxy environment variables
+    # Initialize GeminiService
     gemini_service = GeminiService()
 
     application_builder = Application.builder().token(TELEGRAM_BOT_TOKEN)
-
-    # Set proxy for python-telegram-bot
-    if HTTP_PROXY_URL:
-        application_builder = application_builder.proxy_url(HTTP_PROXY_URL)
 
     application = application_builder.build()
 
